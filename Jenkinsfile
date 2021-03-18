@@ -1,27 +1,40 @@
-node {
-    def app
+podTemplate(yaml: '''
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: docker
+    image: docker:19.03.1-dind
+    securityContext:
+      privileged: true
+    env:
+      - name: DOCKER_TLS_CERTDIR
+        value: ""
+''') {
+    node(POD_LABEL) {
+        stage('Clone repository') {
+            /* Let's make sure we have the repository cloned to our workspace */
 
-    stage('Clone repository') {
-        /* Let's make sure we have the repository cloned to our workspace */
+            checkout scm
+        }
 
-        checkout scm
-    }
+        stage('Build image') {
+            /* This builds the actual image; synonymous to
+             * docker build on the command line */
 
-    stage('Build image') {
-        /* This builds the actual image; synonymous to
-         * docker build on the command line */
+            app = docker.build("nabuskey/jenkins-test")
+        }
 
-        app = docker.build("nabuskey/jenkins-test")
-    }
-
-    stage('Push image') {
-        /* Finally, we'll push the image with two tags:
-         * First, the incremental build number from Jenkins
-         * Second, the 'latest' tag.
-         * Pushing multiple tags is cheap, as all the layers are reused. */
-        docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-            app.push("${env.BUILD_NUMBER}")
-            app.push("latest")
+        stage('Push image') {
+            /* Finally, we'll push the image with two tags:
+             * First, the incremental build number from Jenkins
+             * Second, the 'latest' tag.
+             * Pushing multiple tags is cheap, as all the layers are reused. */
+            docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+                app.push("${env.BUILD_NUMBER}")
+                app.push("latest")
+            }
         }
     }
 }
+
