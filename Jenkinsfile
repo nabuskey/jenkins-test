@@ -24,7 +24,6 @@ pipeline {
           gitTag=sh(returnStdout: true, script: "git tag --contains | head -1").trim()
         }
       }
-      environment
     }
     stage('Build image release') {
       when { expression {return gitTag;} }
