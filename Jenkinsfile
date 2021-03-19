@@ -26,6 +26,7 @@ pipeline {
       when { buildingTag() }
       steps {
         container('docker'){
+          sh 'echo build release'
           script {
             app = docker.build("nabuskey/jenkins-test")
             docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
@@ -39,6 +40,7 @@ pipeline {
       when { not { buildingTag() }}
       steps {
         container('docker'){
+          sh 'echo build'
           script {
             app = docker.build("nabuskey/jenkins-test")
             docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
