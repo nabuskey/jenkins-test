@@ -14,7 +14,7 @@ spec:
     node(POD_LABEL) {
         stage('Clone repository') {
             /* Let's make sure we have the repository cloned to our workspace */
-
+            sh 'env'
             checkout scm
         }
 
@@ -28,8 +28,8 @@ spec:
           container('docker'){
             sh 'env'
             docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-                app.push("${env.BUILD_NUMBER}")
-                app.push("latest")
+//                app.push("${env.BUILD_NUMBER}")
+//                app.push("latest")
             } 
           }
         }
