@@ -1,0 +1,14 @@
+name: test
+application: moretest
+serviceAccount: keeltest-service-account
+artifacts:
+- name: nabuskey/jenkins-test
+  type: docker
+  reference: my-docker-artifact
+  tagVersionStrategy: semver-tag
+environments:
+  - name: dev
+    locations:
+      account: deploy-keel-dev
+      regions: []
+    resources: []
