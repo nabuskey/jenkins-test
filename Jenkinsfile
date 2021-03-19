@@ -22,6 +22,8 @@ pipeline {
         checkout scm
         script {
           gitTag=sh(returnStdout: true, script: "git tag --contains | head -1").trim()
+          sh "echo ${gitTag}"
+          sh 'echo $gitTag'
         }
       }
     }
