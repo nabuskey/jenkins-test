@@ -24,7 +24,16 @@ spec:
 //            app = docker.build("nabuskey/jenkins-test")
           }
         }
-
+        stage('Push image release') {
+          when { buildingTag() }
+          container('docker'){
+            sh 'env'
+            docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+                app.push("${env.TAG_NAME}")
+            } 
+          }
+        }
+      
         stage('Push image') {
           container('docker'){
             sh 'env'
