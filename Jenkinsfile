@@ -1,48 +1,38 @@
-podTemplate(yaml: '''
-apiVersion: v1
-kind: Pod
-spec:
-  containers:
-  - name: docker
-    image: docker:19.03.1-dind
-    securityContext:
-      privileged: true
-    env:
-      - name: DOCKER_TLS_CERTDIR
-        value: ""
-''') {
-    node(POD_LABEL) {
-        stage('Clone repository') {
-            /* Let's make sure we have the repository cloned to our workspace */
-          
-            checkout scm
-        }
-
-        stage('Build image') {
-          container('docker'){
-            sh 'env'
-//            app = docker.build("nabuskey/jenkins-test")
-          }
-        }
-        stage('Push image release') {
-          when { buildingTag() }
-          container('docker'){
-            sh 'env'
-            docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-                app.push("${env.TAG_NAME}")
-            } 
-          }
-        }
-      
-        stage('Push image') {
-          container('docker'){
-            sh 'env'
-            docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-//                app.push("${env.BUILD_NUMBER}")
-//                app.push("latest")
-            } 
-          }
-        }
+pipeline {
+  agent {
+    kubernetes {
+      yaml """\
+        apiVersion: v1
+        kind: Pod
+        spec:
+          containers:
+          - name: docker
+            image: docker:19.03.1-dind
+            securityContext:
+              privileged: true
+            env:
+              - name: DOCKER_TLS_CERTDIR
+                value: ""
+        """.stripIndent()
     }
+  }
+  stages {
+    stage('Clone repository') {
+      steps {
+        checkout scm
+      }
+    }
+    stage('Build image') {
+      steps {
+        container('docker'){
+            sh 'env'
+            app = docker.build("nabuskey/jenkins-test")
+        }
+      }
+    }
+  }
 }
+
+
+
 
