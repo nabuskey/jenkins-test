@@ -23,8 +23,8 @@ pipeline {
       }
     }
     stage('Build image') {
+      when { buildingTag() }
       steps {
-        when { buildingTag() }
         container('docker'){
           script {
             app = docker.build("nabuskey/jenkins-test")
