@@ -26,7 +26,10 @@ pipeline {
       }
     }
     stage('Build image release') {
-      when { expression {return gitTag;} }
+      environment {
+        TAG_NAME = gitTag
+      }
+      when { buildingTag() }
       steps {
         container('docker'){
           sh 'echo build release'
@@ -40,6 +43,9 @@ pipeline {
       }
     }
     stage('Build image') {
+      environment {
+        TAG_NAME = gitTag
+      }
       when { not { buildingTag() }}
       steps {
         container('docker'){
