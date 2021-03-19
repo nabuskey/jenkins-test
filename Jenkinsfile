@@ -25,7 +25,8 @@ pipeline {
     stage('Build image') {
       steps {
         container('docker'){
-            sh 'env'
+          app = docker.build("nabuskey/jenkins-test")
+          sh 'env'
        
         }
       }
