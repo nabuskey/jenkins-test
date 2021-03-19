@@ -20,10 +20,14 @@ pipeline {
     stage('Clone repository') {
       steps {
         checkout scm
+        script {
+          gitTag=sh(returnStdout: true, script: "git tag --contains | head -1").trim()
+        }
       }
+      environment
     }
     stage('Build image release') {
-      when { buildingTag() }
+      when { expression {return gitTag;} }
       steps {
         container('docker'){
           sh 'echo build release'
