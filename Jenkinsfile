@@ -22,12 +22,29 @@ pipeline {
         checkout scm
       }
     }
-    stage('Build image') {
+    stage('Build image release') {
       when { buildingTag() }
       steps {
         container('docker'){
           script {
             app = docker.build("nabuskey/jenkins-test")
+            docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+                app.push("${env.TAG_NAME}")
+            }
+          }      
+        }
+      }
+    }
+    stage('Build image') {
+      when { not { buildingTag() }}
+      steps {
+        container('docker'){
+          script {
+            app = docker.build("nabuskey/jenkins-test")
+            docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+              app.push("${env.BUILD_NUMBER}")
+              app.push("latest")
+            }
           }      
         }
       }
