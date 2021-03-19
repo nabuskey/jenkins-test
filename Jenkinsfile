@@ -14,7 +14,7 @@ spec:
     node(POD_LABEL) {
         stage('Clone repository') {
             /* Let's make sure we have the repository cloned to our workspace */
-            sh 'env'
+          
             checkout scm
         }
 
