@@ -20,7 +20,8 @@ spec:
 
         stage('Build image') {
           container('docker'){
-            app = docker.build("nabuskey/jenkins-test")
+            sh 'env'
+//            app = docker.build("nabuskey/jenkins-test")
           }
         }
 
