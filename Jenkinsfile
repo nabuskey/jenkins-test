@@ -23,14 +23,12 @@ pipeline {
         script {
           gitTag=sh(returnStdout: true, script: "git tag --contains | head -1").trim()
           sh "echo ${gitTag}"
-          sh 'echo $gitTag'
+          env.TAG_NAME=sh(returnStdout: true, script: "git tag --contains | head -1").trim()
+          sh "echo ${env.Tag_NAME}"
         }
       }
     }
     stage('Build image release') {
-      environment {
-        TAG_NAME = "${gitTag}"
-      }
       when { buildingTag() }
       steps {
         container('docker'){
@@ -45,9 +43,6 @@ pipeline {
       }
     }
     stage('Build image') {
-      environment {
-        TAG_NAME = "${gitTag}"
-      }
       when { not { buildingTag() }}
       steps {
         container('docker'){
