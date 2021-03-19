@@ -26,7 +26,7 @@ pipeline {
       steps {
         container('docker'){
             sh 'env'
-            app = docker.build("nabuskey/jenkins-test")
+       
         }
       }
     }
