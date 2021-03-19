@@ -27,7 +27,7 @@ pipeline {
     }
     stage('Build image release') {
       environment {
-        TAG_NAME = gitTag
+        TAG_NAME = "${gitTag}"
       }
       when { buildingTag() }
       steps {
@@ -44,7 +44,7 @@ pipeline {
     }
     stage('Build image') {
       environment {
-        TAG_NAME = gitTag
+        TAG_NAME = "${gitTag}"
       }
       when { not { buildingTag() }}
       steps {
