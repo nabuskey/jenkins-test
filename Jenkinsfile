@@ -34,7 +34,7 @@ pipeline {
         container('docker'){
           sh 'echo build release'
           script {
-            app = docker.build("nabuskey/jenkins-test")
+            app = docker.build("nabuskey/jenkins-test", "--build-arg jobName=${env.JOB_NAME} .")
             docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
                 app.push("${env.TAG_NAME}")
             }
