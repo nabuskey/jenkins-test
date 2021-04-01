@@ -48,7 +48,7 @@ pipeline {
         container('docker'){
           sh 'echo build'
           script {
-            app = docker.build("nabuskey/jenkins-test")
+            app = docker.build("nabuskey/jenkins-test", "--build-arg buildNumber=${env.BUILD_NUMBER}")
             docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
               app.push("${env.BUILD_NUMBER}")
               app.push("latest")
