@@ -1,4 +1,4 @@
 FROM httpd:2.4
-ARG buildNumber
+ARG jobName
 COPY index.html /usr/local/apache2/htdocs/
-LABEL jobName=$buildNumber
+LABEL jobName=$jobName
